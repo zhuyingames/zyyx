@@ -31,13 +31,36 @@ Object.keys(json).forEach((key) => {
           fs.mkdirSync("assets");
         }
         const basename = path.basename(name);
-        const filePath = path.join(__dirname, "assets", basename);
+        const tempDir = path.join(__dirname, "assets", "temp");
+        const saveFilePath = path.join(__dirname, "assets", basename);
+        const tempFilePath = path.join(__dirname, "assets", "temp", basename);
+        let filePath = saveFilePath;
+        let isTemp = false;
+        if (fs.existsSync(saveFilePath)) {
+          filePath = tempFilePath;
+          isTemp = true;
+          if (!fs.existsSync(tempDir)) {
+            fs.mkdirSync(tempDir);
+          }
+        }
         const stream = fs.createWriteStream(filePath);
+        stream.on("close", () => {
+          if (isTemp) {
+            const saveContent = fs.readFileSync(saveFilePath);
+            const tempContent = fs.readFileSync(tempFilePath);
+            if (saveContent.equals(tempContent)) {
+              console.log(`${name} is up to date.`);
+            }
+            fs.rmSync(tempFilePath);
+            fs.rmdirSync(tempDir);
+          } else {
+            console.log(`${name} download completed.`);
+          }
+        });
         res.on("data", (data) => {
           stream.write(data);
         });
         res.on("end", () => {
-          console.log(`${name} download completed.`);
           stream.end();
         });
       });
