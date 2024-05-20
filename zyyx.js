@@ -55,6 +55,33 @@ Object.keys(json).forEach((key) => {
             fs.rmdirSync(tempDir);
           } else {
             console.log(`${name} download completed.`);
+            const date = new Date();
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const hour = date.getHours().toString().padStart(2, "0");
+            const minute = date.getMinutes().toString().padStart(2, "0");
+            const second = date.getSeconds().toString().padStart(2, "0");
+            const timezoneOffset = date.getTimezoneOffset();
+            const hourOffset = Math.abs(timezoneOffset / 60);
+            let sign = "";
+            if (timezoneOffset <= 0) {
+              sign = "+";
+            } else {
+              sign = "-";
+            }
+            const timezone = `${sign}${hourOffset
+              .toString()
+              .padStart(2, "0")}:00`;
+            const update_time = `${year}-${month}-${day} ${hour}:${minute}:${second} ${timezone}`;
+            info["assets"][name] = {
+              update_time: update_time,
+            };
+            fs.writeFileSync(
+              "res-lock.json",
+              JSON.stringify(info, null, 2) + "\n",
+              "utf-8"
+            );
           }
         });
         res.on("data", (data) => {
@@ -67,13 +94,6 @@ Object.keys(json).forEach((key) => {
       req.on("error", (err) => {
         console.error(err);
       });
-      info["assets"][name] = {};
     });
   }
 });
-
-fs.writeFileSync(
-  "res-lock.json",
-  JSON.stringify(info, null, 2) + "\n",
-  "utf-8"
-);
