@@ -6,8 +6,13 @@ const path = require("path");
 const data = fs.readFileSync("res.json", "utf-8");
 const json = JSON.parse(data);
 
-const info = {};
-info["assets"] = {};
+let info = {};
+if (fs.existsSync("res-lock.json")) {
+  const lockData = fs.readFileSync("res-lock.json", "utf-8");
+  info = JSON.parse(lockData);
+} else {
+  info["assets"] = {};
+}
 
 function createDownloadClient(url) {
   const urlObj = new URL(url);
@@ -15,9 +20,15 @@ function createDownloadClient(url) {
   return client;
 }
 
+let assetLength = 0;
+let assetIndex = 0;
+const tempDir = path.join(__dirname, "assets", "temp");
+
 Object.keys(json).forEach((key) => {
   if (key === "assets") {
+    assetLength = Object.keys(json["assets"]).length;
     Object.keys(json["assets"]).forEach((name) => {
+      assetIndex++;
       const url = json["assets"][name];
       const client = createDownloadClient(url);
       const req = client.get(url, (res) => {
@@ -31,7 +42,6 @@ Object.keys(json).forEach((key) => {
           fs.mkdirSync("assets");
         }
         const basename = path.basename(name);
-        const tempDir = path.join(__dirname, "assets", "temp");
         const saveFilePath = path.join(__dirname, "assets", basename);
         const tempFilePath = path.join(__dirname, "assets", "temp", basename);
         let filePath = saveFilePath;
@@ -52,7 +62,9 @@ Object.keys(json).forEach((key) => {
               console.log(`${name} is up to date.`);
             }
             fs.rmSync(tempFilePath);
-            fs.rmdirSync(tempDir);
+            if (assetIndex === assetLength) {
+              fs.rmdirSync(tempDir);
+            }
           } else {
             console.log(`${name} download completed.`);
             const date = new Date();
