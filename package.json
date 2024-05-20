@@ -1,0 +1,16 @@
+{
+  "name": "zyyx",
+  "version": "0.1.0",
+  "author": "zhuyingames",
+  "description": "ZhuYinGames Resources Manager",
+  "main": "zyyx.js",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhuyingames/zyyx.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zhuyingames/zyyx/issues"
+  },
+  "homepage": "https://github.com/zhuyingames/zyyx#readme"
+}
