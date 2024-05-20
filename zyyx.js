@@ -24,7 +24,8 @@ function createDownloadClient(url) {
 
 let assetLength = 0;
 let assetIndex = 0;
-const tempDir = path.join(__dirname, "assets", "temp");
+const workDir = process.cwd();
+const tempDir = path.join(workDir, "assets", "temp");
 
 Object.keys(json).forEach((key) => {
   if (key === "assets") {
@@ -43,8 +44,8 @@ Object.keys(json).forEach((key) => {
           fs.mkdirSync("assets");
         }
         const basename = path.basename(name);
-        const saveFilePath = path.join(__dirname, "assets", basename);
-        const tempFilePath = path.join(__dirname, "assets", "temp", basename);
+        const saveFilePath = path.join(workDir, "assets", basename);
+        const tempFilePath = path.join(workDir, "assets", "temp", basename);
         let filePath = saveFilePath;
         let isTemp = false;
         if (fs.existsSync(saveFilePath)) {
