@@ -1,6 +1,7 @@
 const fs = require("fs");
 const http = require("http");
 const https = require("https");
+const path = require("path");
 
 const data = fs.readFileSync("res.json", "utf-8");
 const json = JSON.parse(data);
@@ -26,7 +27,12 @@ Object.keys(json).forEach((key) => {
           );
           return;
         }
-        const stream = fs.createWriteStream(name);
+        if (!fs.existsSync("assets")) {
+          fs.mkdirSync("assets");
+        }
+        const basename = path.basename(name);
+        const filePath = path.join(__dirname, "assets", basename);
+        const stream = fs.createWriteStream(filePath);
         res.on("data", (data) => {
           stream.write(data);
         });
