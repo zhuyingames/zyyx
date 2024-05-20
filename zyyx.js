@@ -68,6 +68,10 @@ Object.keys(json).forEach((key) => {
               fs.rm(tempDir, { recursive: true, force: true }, () => {});
             }
           } else {
+            assetIndex++;
+            if (assetIndex === assetLength) {
+              fs.rm(tempDir, { recursive: true, force: true }, () => {});
+            }
             console.log(`${name} download completed.`);
             const date = new Date();
             const year = date.getFullYear();
