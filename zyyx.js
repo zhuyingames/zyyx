@@ -28,7 +28,6 @@ Object.keys(json).forEach((key) => {
   if (key === "assets") {
     assetLength = Object.keys(json["assets"]).length;
     Object.keys(json["assets"]).forEach((name) => {
-      assetIndex++;
       const url = json["assets"][name];
       const client = createDownloadClient(url);
       const req = client.get(url, (res) => {
@@ -61,9 +60,9 @@ Object.keys(json).forEach((key) => {
             if (saveContent.equals(tempContent)) {
               console.log(`${name} is up to date.`);
             }
-            fs.rmSync(tempFilePath);
+            assetIndex++;
             if (assetIndex === assetLength) {
-              fs.rmdirSync(tempDir);
+              fs.rm(tempDir, { recursive: true, force: true }, () => {});
             }
           } else {
             console.log(`${name} download completed.`);
