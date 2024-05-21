@@ -5,6 +5,22 @@ const http = require("http");
 const https = require("https");
 const path = require("path");
 
+const VERSION = "0.1.5";
+
+if (process.argv.length > 2) {
+  const cmd1 = process.argv[2];
+  switch (cmd1) {
+    case "version":
+      console.log(VERSION);
+      process.exit(0);
+      break;
+    case "-v":
+      console.log(VERSION);
+      process.exit(0);
+      break;
+  }
+}
+
 const data = fs.readFileSync("res.json", "utf-8");
 const json = JSON.parse(data);
 
