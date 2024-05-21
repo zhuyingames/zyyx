@@ -1,5 +1,7 @@
 # zyyx
 
+- ZhuYinGames Resources Manager
+
 ## Install
 
 ```bash
