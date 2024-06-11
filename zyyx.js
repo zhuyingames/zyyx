@@ -5,7 +5,7 @@ const http = require("http");
 const https = require("https");
 const path = require("path");
 
-const VERSION = "0.1.5";
+const VERSION = "0.1.6";
 
 if (process.argv.length > 2) {
   const cmd1 = process.argv[2];
@@ -43,10 +43,14 @@ let assetIndex = 0;
 const workDir = process.cwd();
 const tempDir = path.join(workDir, "assets", "temp");
 
+let findAssets = false;
+
 Object.keys(json).forEach((key) => {
   if (key === "assets") {
-    assetLength = Object.keys(json["assets"]).length;
-    Object.keys(json["assets"]).forEach((name) => {
+    findAssets = true;
+    const assets = Object.keys(json["assets"]);
+    assetLength = assets.length;
+    assets.forEach((name) => {
       const url = json["assets"][name];
       const client = createDownloadClient(url);
       const req = client.get(url, (res) => {
@@ -131,3 +135,7 @@ Object.keys(json).forEach((key) => {
     });
   }
 });
+
+if (!findAssets) {
+  console.log('Warning: res.json should contain "assets" field.');
+}
